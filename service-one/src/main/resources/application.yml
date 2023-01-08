@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  health:
+    diskspace:
+      enabled: false
+    circuitbreakers:
+      enabled: true
+    ratelimiters:
+      enabled: false
+  metrics:
+    tags:
+      application: service-one
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+        resilience4j:
+          circuitbreaker:
+            calls: true
+
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
